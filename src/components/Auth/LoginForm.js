@@ -10,9 +10,11 @@ import {
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { user, userDetails } from "../../utils/userDB";
+import useAuth from "../../hooks/useAuth";
 
 const LoginForm = () => {
   const [error, setError] = useState("");
+  const { login } = useAuth();
 
   const formik = useFormik({
     initialValues: initialValues(),
@@ -23,6 +25,8 @@ const LoginForm = () => {
       const { username, password } = formValues;
       if (username !== user.username || password !== user.password) {
         setError("Usuario o contraseña incorrectos");
+      } else {
+        login(userDetails);
       }
     },
   });
