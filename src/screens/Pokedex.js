@@ -1,6 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { SafeAreaView } from "react-native";
-import { getPokemonsApi, getPokemonDetailsByUrlApi } from "../api/pokemon";
+import {
+  getPokemonsApi,
+  getPokemonDetailsByUrlApi,
+  savePokemonListToStorage,
+  getPokemonListFromStorage,
+} from "../api/pokemon";
 import PokemonList from "../components/PokemonList";
 import Search from "../components/Search";
 import { API_HOST } from "../utils/constants";
@@ -13,6 +18,7 @@ export default function Pokedex() {
   useEffect(() => {
     (async () => {
       await loadPokemons();
+      await savePokemonListToStorage();
     })();
   }, []);
 
@@ -36,15 +42,13 @@ export default function Pokedex() {
 
   const searchPokemons = async (searchValue) => {
     try {
-      const response = await getPokemonsApi(
-        `${API_HOST}/pokemon?limit=20&offset=0`
-      );
-      const pokemonsRes = response.results.filter((pokemon) =>
+      const pokemonList = await getPokemonListFromStorage();
+      const pokemonsFiltered = pokemonList.filter((pokemon) =>
         pokemon.name.includes(searchValue)
       );
       setNextUrl(null);
 
-      const pokemonsArray = await getPokemonsArray(pokemonsRes);
+      const pokemonsArray = await getPokemonsArray(pokemonsFiltered);
       setPokemons(pokemonsArray);
     } catch (error) {
       console.error(error);
