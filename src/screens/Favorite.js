@@ -39,7 +39,6 @@ export default function Favorite() {
     try {
       const response = await getPokemonsFavoriteApi();
       setPokemons(response);
-      console.log(response);
     } catch (error) {
       console.log(error);
     }
